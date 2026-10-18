@@ -6,7 +6,7 @@ error_reporting(0);
 
 	$host 	= 'sql313.infinityfree.com'; 
 	$user 	= 'if0_43206000'; 
-	$pass 	= 'Sindanglengo123'; 
+	$pass 	= 'sindanglengo123'; 
 	$dbname = 'if0_43206000_tokogrosir'; 
 	
 	try{
