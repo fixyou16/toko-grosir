@@ -21,34 +21,22 @@ include 'admin/template/header.php';
 include 'admin/template/sidebar.php';
 
 if ($page !== '') {
-    // Kasir hanya dapat membuka halaman operasional yang diizinkan.
-    // Manajemen pengguna bukan fitur operasional kasir.
-    $allowedPages = ($roleId === 2)
-        ? ['jual', 'laporan']
-        : [
-            'jual',
-            'laporan',
-            'barang',
-            'kategori',
-            'stok',
-            'stock_opname',
-            'user',
-            'manajemen_user',
-            'pengaturan',
-            'pengguna',
-        ];
+    // Batasi kasir pada fitur operasional yang diizinkan.
+    // Halaman manajemen user dan halaman admin lain tidak tersedia untuk kasir.
+    $cashierAllowedPages = ['jual', 'laporan'];
 
-    // Hanya izinkan nama halaman sederhana; mencegah path traversal lewat ?page=.
-    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $page) || !in_array($page, $allowedPages, true)) {
+    // Nama halaman hanya boleh berupa identifier sederhana; bukan path file.
+    if (!preg_match('/^[a-zA-Z0-9_-]+$/', $page)) {
+        http_response_code(400);
+        echo '<div class="container-fluid"><div class="alert alert-danger" role="alert">Permintaan halaman tidak valid.</div></div>';
+    } elseif ($roleId === 2 && !in_array($page, $cashierAllowedPages, true)) {
         http_response_code(403);
-        echo '<div class="container-fluid"><div class="alert alert-danger" role="alert">Halaman ini tidak tersedia untuk akun Anda.</div></div>';
+        echo '<div class="container-fluid"><div class="alert alert-danger" role="alert">Halaman ini tidak tersedia untuk akun kasir.</div></div>';
     } else {
-        $modulePath = 'admin/module/' . $page . '/index.php';
-
-        // Beberapa proyek lama menggunakan nama folder modul khusus.
-        if ($page === 'manajemen_user') {
-            $modulePath = 'admin/module/manajemen_user/index.php';
-        }
+        // Pertahankan modul yang ada untuk admin, termasuk folder khusus manajemen_user.
+        $modulePath = ($page === 'manajemen_user')
+            ? 'admin/module/manajemen_user/index.php'
+            : 'admin/module/' . $page . '/index.php';
 
         if (is_file($modulePath)) {
             include $modulePath;
@@ -58,12 +46,13 @@ if ($page !== '') {
         }
     }
 } else {
-    // Halaman awal kasir diarahkan ke transaksi, bukan dashboard admin.
+    // Akun kasir langsung masuk ke halaman penjualan.
     if ($roleId === 2) {
         $cashierHome = 'admin/module/jual/index.php';
         if (is_file($cashierHome)) {
             include $cashierHome;
         } else {
+            http_response_code(404);
             echo '<div class="container-fluid"><div class="alert alert-warning" role="alert">Modul penjualan belum ditemukan.</div></div>';
         }
     } else {
