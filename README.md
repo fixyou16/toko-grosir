@@ -59,7 +59,7 @@ Pastikan folder yang dipanggil oleh kode juga tersedia, termasuk `admin/`, `fung
 
 ### 3. Konfigurasikan koneksi database
 
-Edit `config.php) pada server dan sesuaikan:
+Edit `config.php` pada server dan sesuaikan:
 
 - Host MySQL yang diberikan InfinityFree.
 - Nama database lengkap yang diberikan panel.
@@ -78,7 +78,7 @@ Pastikan ada role `admin` di tabel `role`, lalu buat pasangan profil `member` da
 
 ### 5. Uji aplikasi
 
-- Buka halaman login dan pastikan CSS serta JavaScript termuat.
+- Buka halaman login dan pastikan tampilan responsif serta tombol tampil/sembunyikan password berfungsi.
 - Login dengan akun yang telah dibuat.
 - Uji menu barang, kategori, penjualan, laporan, ekspor, dan cetak struk.
 - Lakukan pengujian dengan data percobaan sebelum memakai data toko sebenarnya.
